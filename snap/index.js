@@ -1,11 +1,8 @@
-wallet.registerRpcMessageHandler(async (originString, requestObject) => {
-  switch (requestObject.method) {
-    case 'hello':
-      return wallet.send({
-        method: 'alert',
-        params: [`Hello, ${originString}!`]
-      });
+wallet.registerRpcMessageHandler(async (originString, requestString) => {
+  switch (requestString) {
+    case 'log_accounts':
+      return await wallet.send({ method: 'eth_accounts' });
     default:
-      throw new Error('Method not found.');
+      throw new Error('invalid');
   }
 });

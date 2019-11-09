@@ -1,68 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html>
-
-  </head>
-    <title>Hello Snaps!</title>
+  <head>
+    <title>MetaMask Messaging</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <h1>Hello Snaps!</h1>
-    <details>
-      <summary>Instructions</summary>
-      <ul>
-        <li>First, click "Connect". Then, try out the other buttons!</li>
-        <li>Please note that:</li>
-        <ul>
-          <li>
-            The Snap <b>package.json</b> must be located in located in the server root directory
-          </li>
-          <li>
-            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
-          </li>
-        </ul>
-      </ul>
-    </details>
-    <br/>
+    <br />
 
-    <button class="connect">Connect</button>
-    <button class="sendHello">Send Hello</button>
+    <section class="hero is-metamask-orange">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            Welcome
+          </h1>
+          <h2 class="subtitle"></h2>
+        </div>
+      </div>
+    </section>
+    <br />
+    <div class="container">
+      <div class="has-text-centered">
+        <button class="button install is-dark">
+          Install Metamask Plugin
+        </button>
+        <button class="button link">Login with Metamask</button>
+      </div>
+      <br /><br /><br />
+      <div class="columns">
+        <div class="column is-two-fifths">
+          <p class="title has-text-centered">Your Messages:</p>
+          <div class="box has-background-white-bis">
+            <p>
+              <strong>From: </strong> 0x8C09fEf42F062C108554302C7D5B15bBC6189daf
+            </p>
+            <p>
+              <strong>Message: </strong> Lorem Ipsum is simply dummy text of the
+              printing and typesetting industry. Lorem Ipsum has been the
+              industry's standard dummy text ever since the 1500s, when an
+              unknown printer took a galley of type and scrambled it to make a
+              type specimen book. It has survived not only five centuries, but
+              also the leap into electronic typesetting, remaining essentially
+              unchanged. It was popularised in the 1960s with the release of
+              Letraset sheets containing Lorem Ipsum passages, and more recently
+              with desktop publishing software like Aldus PageMaker including
+              versions of Lorem Ipsum
+            </p>
+          </div>
+        </div>
+        <div class="column"></div>
+        <div class="column is-two-fifths">
+          <p class="title has-text-centered">Send:</p>
+          <div class="box has-background-white-bis">
+            <div class="field">
+              <label class="label">Receiver Address: </label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Text input" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Message: </label>
+              <div class="control">
+                <textarea class="textarea" placeholder="Textarea"></textarea>
+              </div>
+            </div>
+            <div class="control has-text-centered">
+              <button class="button is-dark is-fullwidth">Send!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 
   <script>
+    const snapUrl = new URL('package.json', window.location.href).toString();
+    const snapId = `wallet_plugin_${snapUrl}`;
 
-    const snapUrl = new URL('package.json', window.location.href).toString()
-    const snapId = `wallet_plugin_${snapUrl}`
+    const connectButton = document.querySelector('button.install');
+    const sendButton = document.querySelector('button.link');
+    const addressH2 = document.querySelector('h2.subtitle');
 
-    const connectButton = document.querySelector('button.connect')
-    const sendButton = document.querySelector('button.sendHello')
+    connectButton.addEventListener('click', install);
+    sendButton.addEventListener('click', link);
 
-    connectButton.addEventListener('click', connect)
-    sendButton.addEventListener('click', send)
-
-    async function connect () {
+    async function install() {
       await ethereum.send({
         method: 'wallet_requestPermissions',
-        params: [{
-          [snapId]: {}
-        }]
-      })
+        params: [
+          {
+            [snapId]: {},
+            eth_accounts: {}
+          }
+        ]
+      });
     }
 
-    async function send () {
+    async function link() {
       try {
         const response = await ethereum.send({
           method: snapId,
-          params: [{
-            method: 'hello'
-          }]
-        })
+          params: ['log_accounts']
+        });
+        addressH2.innerHTML = response.result[0];
       } catch (err) {
-        console.error(err)
-        alert('Problem happened: ' + err.message || err)
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
       }
     }
-
   </script>
-
 </html>
