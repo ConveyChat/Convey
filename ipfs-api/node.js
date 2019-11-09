@@ -9,14 +9,10 @@ class IpfsNode {
         this.node = await IPFS.create();
     }
 
-	async addFile() {
-		const input = {
-			test: "message"
-		};
-
+	async addMessage(input) {
 		const contentAdded = await this.node.add(Buffer.from(JSON.stringify(input)));
 
-		console.log("Added file:", contentAdded[0].hash);
+		console.log("Added:", contentAdded[0].hash);
 
 		const buffer = await this.node.cat(contentAdded[0].hash);
 
@@ -24,15 +20,19 @@ class IpfsNode {
 		return contentAdded[0].hash;
     }
     
-    async getFile() {
-        const validCID = "QmPmZWkr7yavwicz4nFtJY7qumCA9hcSsbt415arh3nzzB";
+    async getMessages(hashes) {
+        var messageArr = [];
 
-        this.node.get(validCID, function(err, files) {
-            files.forEach(file => {
-                console.log(file.path);
-                console.log(file.content.toString("utf8"));
-            });
-        });
+        for (const hash of hashes) {
+            var messages = await this.node.get(hash)
+            // console.log(messages)
+            messages.forEach(message => {
+                messageArr.push(message.content.toString('utf8'));
+            })
+        }
+
+        // console.log(messageArr)
+        return messageArr
     }
 }
 
