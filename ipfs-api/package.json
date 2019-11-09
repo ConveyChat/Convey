@@ -1,0 +1,18 @@
+{
+  "name": "ipfs-api",
+  "version": "1.0.0",
+  "description": "IPFS Node for Metamask Messenger",
+  "main": "IPFS.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "ipfs": "^0.39.0",
+    "ipfs-http-client": "^39.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
