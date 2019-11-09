@@ -1,9 +1,7 @@
-html,
-body {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
 .is-metamask-orange {
   background-color: #f6851b;
+}
+
+.hidden {
+  display: none;
 }

@@ -35,22 +35,8 @@
       <div class="columns">
         <div class="column is-two-fifths">
           <p class="title has-text-centered">Your Messages:</p>
-          <div class="box has-background-white-bis">
-            <p>
-              <strong>From: </strong> 0x8C09fEf42F062C108554302C7D5B15bBC6189daf
-            </p>
-            <p>
-              <strong>Message: </strong> Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry. Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s, when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book. It has survived not only five centuries, but
-              also the leap into electronic typesetting, remaining essentially
-              unchanged. It was popularised in the 1960s with the release of
-              Letraset sheets containing Lorem Ipsum passages, and more recently
-              with desktop publishing software like Aldus PageMaker including
-              versions of Lorem Ipsum
-            </p>
+          <div class="messages">
+            <h1 class="subtitle">Login to view messages</h1>
           </div>
         </div>
         <div class="column"></div>
@@ -79,15 +65,56 @@
   </body>
 
   <script>
+    let ethAddress;
+
     const snapUrl = new URL('package.json', window.location.href).toString();
     const snapId = `wallet_plugin_${snapUrl}`;
 
     const connectButton = document.querySelector('button.install');
     const sendButton = document.querySelector('button.link');
     const addressH2 = document.querySelector('h2.subtitle');
+    const messagesDiv = document.querySelector('div.messages');
 
     connectButton.addEventListener('click', install);
     sendButton.addEventListener('click', link);
+
+    async function loadMessages() {
+      let hardcodedMsgs = [
+        {
+          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          body:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        },
+        {
+          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          body:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        },
+        {
+          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          body:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        },
+        {
+          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          body:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        }
+      ];
+
+      messagesDiv.innerHTML = '';
+      for (let msg of hardcodedMsgs) {
+        messagesDiv.innerHTML += `<article class="message has-background-white-bis">
+              <div class="message-header">
+                <p><strong>From: </strong>${msg.from}</p>
+                <button class="toggle"></button>
+              </div>
+              <div class="message-body">
+                ${msg.body}
+              </div>
+            </article>`;
+      }
+    }
 
     async function install() {
       await ethereum.send({
@@ -99,6 +126,7 @@
           }
         ]
       });
+      connectButton.style.display = 'none';
     }
 
     async function link() {
@@ -107,7 +135,11 @@
           method: snapId,
           params: ['log_accounts']
         });
-        addressH2.innerHTML = response.result[0];
+        ethAddress = response.result[0];
+        addressH2.innerHTML = ethAddress;
+        sendButton.style.display = 'none';
+        connectButton.style.display = 'none'; // This is needed for cases where the user already installed the plugin and just clicks Login
+        loadMessages();
       } catch (err) {
         console.error(err);
         alert('Problem happened: ' + err.message || err);
