@@ -3,11 +3,18 @@ import 'openzeppelin-eth/contracts/math/SafeMath.sol';
 
 contract MetamaskMessaging {
     using SafeMath for uint256;
-    
-    // Maps an address to an array of ipfs hashes that store encrypted messages
-    mapping(address => mapping(uint256 => string)) private inbox;
-    mapping(address => uint256) private latestMessage;
    
+    event Message(
+        address indexed _from,
+        address indexed _to,
+        string message
+    );
+    
+    event Broadcast(
+        address indexed _from,
+        string message
+    );
+    
     // An opt-in whitelist to allow only the users in the whitelist to message the owner
     mapping(address => bool) private optIn;
     mapping(address => mapping(address => bool)) private whiteList;  
@@ -26,24 +33,6 @@ contract MetamaskMessaging {
      */
     function getWhiteListOptIn() public view returns (bool) {
         return optIn[msg.sender];
-    }
-    
-    /**
-     * @dev Gets the latest index of the ipfs hash. Used for enumeration.
-     * @return uint256 The latest index
-     */
-    function getLatestMessageIndex() public view returns (uint256) {
-        require(latestMessage[msg.sender] != 0, "No messages available");
-        return latestMessage[msg.sender].sub(1);
-    }
-    
-    /**
-     * @dev Gets the ipfs hash to an encrypted message given the index in the user's inbox
-     * @param _index The index of the ipfs hash 
-     * @return string The ipfs hash
-     */
-    function getMessageByIndex(uint256 _index) public view returns (string memory) {
-        return inbox[msg.sender][_index];
     }
     
     /**
@@ -108,7 +97,7 @@ contract MetamaskMessaging {
         queryWhiteListIndex[msg.sender][_receiver] = 0;
     }
     
-    //--------Send Message Functions-------------//
+    //--------Messaging Functions-------------//
     
     /**
      * @dev Sends an ipfs hash of an encrypted message to a receiver's inbox
@@ -116,18 +105,22 @@ contract MetamaskMessaging {
      * @param _ipfsHash The hash of an encrypted message
      */
     function sendMessage(address _receiver, string memory _ipfsHash) public {
-        uint256 latestMessageIndex = latestMessage[_receiver];
-        
         if (optIn[_receiver]) {
             if (whiteList[_receiver][msg.sender]) {
-                inbox[_receiver][latestMessageIndex] = _ipfsHash;
-                latestMessage[_receiver]++;
+                emit Message(msg.sender, _receiver, _ipfsHash);
             } else {
                 revert();
             }
         } else {
-            inbox[_receiver][latestMessageIndex] = _ipfsHash;
-            latestMessage[_receiver]++;            
+            emit Message(msg.sender, _receiver, _ipfsHash);        
         }
+    }
+    
+    /**
+     * @dev Broadcast an ipfs hash of an encrypted message to subscribers
+     * @param _ipfsHash The hash of an encrypted message
+     */
+    function sendBroadcast(string memory _ipfsHash) public {
+        emit Broadcast(msg.sender, _ipfsHash);
     }
 }
