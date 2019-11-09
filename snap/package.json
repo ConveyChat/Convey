@@ -1,0 +1,28 @@
+{
+  "name": "metamask-email",
+  "version": "1.0.0",
+  "description": "ETHWaterloo Project: Use Metamask to send and receive emails",
+  "main": "index.js",
+  "dependencies": {
+    "eth-json-rpc-errors": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ryan-Ouyang/metamask-messaging"
+  },
+  "web3Wallet": {
+    "bundle": {
+      "local": "dist/bundle.js",
+      "url": "http://localhost:8081/dist/bundle.js"
+    },
+    "initialPermissions": {
+      "alert": {}
+    }
+  }
+}
