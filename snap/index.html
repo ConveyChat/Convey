@@ -87,7 +87,7 @@
         const response = await ethereum.send('eth_accounts');
         ethAddress = response[0];
         addressH2.innerHTML = ethAddress;
-        sendButton.style.display = 'none';
+        loginButton.style.display = 'none';
         connectButton.style.display = 'none'; // This is needed for cases where the user already installed the plugin and just clicks Login
         console.log('Received ETH Account');
         await requestIndex();
