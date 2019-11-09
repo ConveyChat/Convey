@@ -5,14 +5,12 @@ wallet.registerApiRequestHandler(async origin => {
   return {
     registerNewMessage: msg => {
       let msgAsset = {
-        symbol: 'MESSAGE-' + (totalMessages + 1).toString(),
-        balance: '',
+        symbol: `${totalMessages + 1}-msg`,
+        balance: `0`,
         identifier: 'metamask-messaging-asset',
-        image: 'https://placekitten.com/200/200',
+        image: 'https://i.imgur.com/1jYAmux.png',
         decimals: 0,
-        customViewUrl:
-          'http://localhost:8081/message.html?id=' +
-          (totalMessages + 1).toString()
+        customViewUrl: 'http://localhost:8081/message?hash=1234546'
       };
 
       trackMessages(origin, msg);
