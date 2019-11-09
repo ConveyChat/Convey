@@ -1,0 +1,10 @@
+version: '3'
+services:
+  snap:
+    build: snap
+    ports:
+      - '8081:8081'
+  api:
+    build: ipfs-api
+    ports:
+      - '3000:3000'
