@@ -43,20 +43,11 @@ async function main() {
 
 		if (message.type === "error") {
 			const { errors, terminal } = message;
-			const paragraphNode = document.createElement("li");
-			paragraphNode.innerText = `An error occurred ${JSON.stringify({
-				errors,
-				terminal
-			})}`;
-
-			document.body.prepend(paragraphNode);
+			console.log(errors);
 		}
 
 		if (message.type === "complete") {
-			const paragraphNode = document.createElement("li");
-			paragraphNode.innerText = "Completed";
-
-			document.body.prepend(paragraphNode);
+			console.log("complete");
 		}
 	});
 
