@@ -8,6 +8,8 @@
       href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/fortmatic@latest/dist/fortmatic.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script>
   </head>
 
   <body>
@@ -28,6 +30,7 @@
           Install Metamask Plugin
         </button>
         <button class="button link">Login with Metamask</button>
+        <button class="fortmatic button link">Login with Fortmatic</button>
       </div>
       <br /><br /><br />
       <div class="columns">
@@ -65,9 +68,17 @@
     const sendButton = document.querySelector('button.link');
     const addressH2 = document.querySelector('h2.subtitle');
     const messagesDiv = document.querySelector('div.messages');
+    const fortmaticButton = document.querySelector('button.fortmatic');
 
+    fortmaticButton.addEventListener('click', loginFortmatic);
     connectButton.addEventListener('click', install);
     sendButton.addEventListener('click', link);
+
+    function loginFortmatic() {
+      let fm = new Fortmatic('pk_test_751BEE87E3E839C5');
+      web3 = new Web3(fm.getProvider()); 
+      web3.eth.getAccounts().then(console.log);    
+    }
 
     async function install() {
       await ethereum.send({
