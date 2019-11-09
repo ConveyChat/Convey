@@ -51,5 +51,19 @@
     </div>
   </body>
 
-  <script></script>
+  <script>
+    window.onload = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hash = urlParams.get('hash');
+
+      const messageArticle = document.querySelector('article.message');
+
+      messageArticle.innerHTML = `<div class="message-header">
+        <p><strong>From: </strong>haardik.eth</p>
+        </div>
+        <div class="message-body">
+          hello helllo lorem ipsum wow much such
+        </div>`;
+    };
+  </script>
 </html>
