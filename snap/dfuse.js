@@ -39,6 +39,7 @@ async function main() {
 	const stream = await client.graphql(operation, message => {
 		if (message.type === "data") {
             console.log(message);
+            console.log(decoder.decodeMessage(message.data.searchTransactions.node.matchingLogs[0].data));
 		}
 
 		if (message.type === "error") {
