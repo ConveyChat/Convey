@@ -23,7 +23,8 @@
     },
     "initialPermissions": {
       "alert": {},
-      "eth_accounts": {}
+      "eth_accounts": {},
+      "wallet_manageAssets": {}
     }
   }
 }

@@ -12,7 +12,6 @@
 
   <body>
     <br />
-
     <section class="hero is-metamask-orange">
       <div class="hero-body">
         <div class="container">
@@ -65,7 +64,7 @@
   </body>
 
   <script>
-    let ethAddress;
+    let ethAddress, index, pluginApi;
 
     const snapUrl = new URL('package.json', window.location.href).toString();
     const snapId = `wallet_plugin_${snapUrl}`;
@@ -81,22 +80,32 @@
     async function loadMessages() {
       let hardcodedMsgs = [
         {
-          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          sender: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          receiver: '0x694E97ad6Ed18c00BffB959D346b8356A2EcBde1',
           body:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
         },
         {
-          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          sender: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          receiver: '0x694E97ad6Ed18c00BffB959D346b8356A2EcBde1',
           body:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
         },
         {
-          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          sender: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          receiver: '0x694E97ad6Ed18c00BffB959D346b8356A2EcBde1',
           body:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
         },
         {
-          from: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          sender: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          receiver: '0x694E97ad6Ed18c00BffB959D346b8356A2EcBde1',
+          body:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        },
+        {
+          sender: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          receiver: '0x694E97ad6Ed18c00BffB959D346b8356A2EcBde1',
           body:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
         }
@@ -106,7 +115,7 @@
       for (let msg of hardcodedMsgs) {
         messagesDiv.innerHTML += `<article class="message has-background-white-bis">
               <div class="message-header">
-                <p><strong>From: </strong>${msg.from}</p>
+                <p><strong>From: </strong>${msg.sender}</p>
                 <button class="toggle"></button>
               </div>
               <div class="message-body">
@@ -131,15 +140,58 @@
 
     async function link() {
       try {
-        const response = await ethereum.send({
-          method: snapId,
-          params: ['log_accounts']
-        });
-        ethAddress = response.result[0];
+        const response = await ethereum.send('eth_accounts');
+        ethAddress = response[0];
         addressH2.innerHTML = ethAddress;
         sendButton.style.display = 'none';
         connectButton.style.display = 'none'; // This is needed for cases where the user already installed the plugin and just clicks Login
         loadMessages();
+        console.log('Received ETH Account');
+        await requestIndex();
+      } catch (err) {
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
+      }
+    }
+
+    async function requestIndex() {
+      try {
+        index = await ethereum.requestIndex();
+        pluginApi = await index.getPluginApi(snapUrl.toString());
+        console.log('Received Snap API');
+      } catch (e) {
+        console.error(e);
+        console.error('Problem requesting index.');
+      }
+    }
+
+    async function send() {
+      try {
+        const response = await pluginApi.registerNewMessage({
+          sender: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
+          receiver: '0x694E97ad6Ed18c00BffB959D346b8356A2EcBde1',
+          body:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        });
+        console.log(response);
+      } catch (err) {
+        console.error(err);
+        alert('Problem happened: ' + err.message || err);
+      }
+    }
+    async function listen() {
+      try {
+        await pluginApi
+          .on('ping', response => {
+            alert(
+              `Listener received response from Snap: ${JSON.stringify(
+                response
+              )}`
+            );
+          })
+          .then(() => {
+            alert('Listener seems to be registered.');
+          });
       } catch (err) {
         console.error(err);
         alert('Problem happened: ' + err.message || err);
