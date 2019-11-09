@@ -1,39 +1,38 @@
-const IPFS = require("ipfs");
+const IPFS = require('ipfs');
 
 class IpfsNode {
-	constructor() {
-        this.init();
-    }
-    
-    async init() {
-        this.node = await IPFS.create();
-    }
+  constructor() {
+    this.init();
+  }
 
-	async addMessage(input) {
-		const contentAdded = await this.node.add(Buffer.from(JSON.stringify(input)));
+  async init() {
+    this.node = await IPFS.create();
+  }
 
-		console.log("Added:", contentAdded[0].hash);
+  async addMessage(input) {
+    const contentAdded = await this.node.add(
+      Buffer.from(JSON.stringify(input))
+    );
 
-		const buffer = await this.node.cat(contentAdded[0].hash);
+    console.log('Added:', contentAdded[0].hash);
 
-		console.log("Added contents:", buffer.toString());
-		return contentAdded[0].hash;
-    }
-    
-    async getMessages(hashes) {
-        var messageArr = [];
+    const buffer = await this.node.cat(contentAdded[0].hash);
 
-        for (const hash of hashes) {
-            var messages = await this.node.get(hash)
-            // console.log(messages)
-            messages.forEach(message => {
-                messageArr.push(message.content.toString('utf8'));
-            })
-        }
+    console.log('Added contents:', buffer.toString());
+    return contentAdded[0].hash;
+  }
 
-        // console.log(messageArr)
-        return messageArr
-    }
+  async getMessage(hash) {
+    let messageArr = [];
+
+    var messages = await this.node.get(hash);
+    // console.log(messages)
+    messages.forEach(message => {
+      messageArr.push(message.content.toString('utf8'));
+    });
+
+    return messageArr[0];
+  }
 }
 
 module.exports = IpfsNode;
