@@ -18,6 +18,10 @@ contract MetamaskMessaging {
     
     //-------Getters--------//
     
+    function getWhiteListOptIn() public view returns (bool) {
+        return optIn[msg.sender];
+    }
+    
     function getLatestMessageIndex() public view returns (uint256) {
         return latestMessage[msg.sender];
     }
@@ -36,14 +40,8 @@ contract MetamaskMessaging {
     
     //-------White List Functions---------//
     
-    function optInWhiteList() public {
-        require(!optIn[msg.sender], "User is already opted in");
-        optIn[msg.sender] = true;
-    }
-    
-    function optOutWhiteList() public {
-        require(optIn[msg.sender], "User has not opted in yet");
-        optIn[msg.sender] = false;
+     function toggleWhiteList() public {
+        optIn[msg.sender] = !optIn[msg.sender];
     }
     
     function addToWhiteList(address _receiver) public {
