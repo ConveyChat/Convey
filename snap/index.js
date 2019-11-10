@@ -1,5 +1,5 @@
 const msgListeners = [];
-let totalMessages = 0;
+let totalMessages = -1;
 
 wallet.registerApiRequestHandler(async origin => {
   return {
