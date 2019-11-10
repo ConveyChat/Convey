@@ -46,7 +46,7 @@ async function main() {
           hash: rawmsg[1],
           receiver: rawmsg[2],
         }
-        if (msg.receiver.toLower() === web3.eth.defaultAccount.toLower()) {
+        if (msg.receiver.toLowerCase() === web3.eth.defaultAccount.toLowerCase()) {
           console.log(msg.receiver + "is getting a message")
           receiveMessage(msg);
         } else {
