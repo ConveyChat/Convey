@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/@dfuse/client"></script>
     <script src="dfuse.js"></script>
     <script src="./decoder/decodeBundle.js"></script>
+    <script src="./send/sendBundle.js"></script>
   </head>
 
   <body>
@@ -50,15 +51,15 @@
               </div>
             </div>
             <div class="control has-text-centered">
-              <button class="button is-dark sendbutton is-fullwidth">Send!</button>
+              <button class="button is-dark sendbutton is-fullwidth">
+                Send!
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </body>
-
-  <script src="bundle.js"></script>
 
   <script>
     let ethAddress, index, pluginApi;
@@ -140,10 +141,12 @@
     }
 
     async function sendMSG() {
-
-      const ensName = document.querySelector("input.input").value;
-      const msg = document.querySelector("textarea.textarea").value;
-      bundle.send(ethAddress, ensName, msg);
+      const ensName = document.querySelector('input.input').value;
+      const body = document.querySelector('textarea.textarea').value;
+      const result = await sender.send(ethAddress, ensName, body);
+      console.log(
+        `call smart contract with mm:${result.hash}:${result.receiver}`
+      );
     }
   </script>
 </html>
