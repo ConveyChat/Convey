@@ -45,6 +45,36 @@ const provider = ethers.getDefaultProvider('ropsten');
     console.log(response);
   }
 
+  async function send(ethAddress, msg) {
+ 
+    const message = msg;
+
+    // if the address isn't valid
+    // if (!toChecksumAddress(addr)) {
+    //   alert('Address is not valid');
+    //   return;
+    // }
+
+    //create JSON
+    var obj = new Object();
+    obj.receiver = "";
+    obj.sender = ethAddress;
+    obj.body = message;
+
+    const response = await fetch('http://localhost:3000/addfile', {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: obj // body data type must match "Content-Type" header
+    });
+    //const body = await response.json();
+
+    console.log(response);
+  }
+
   module.exports = {
     send: send 
   };

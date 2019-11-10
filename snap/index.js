@@ -5,7 +5,7 @@ wallet.registerApiRequestHandler(async origin => {
   return {
     registerNewMessage: msg => {
       let msgAsset = {
-        symbol: `${totalMessages + 1}-msg`,
+        symbol: `${totalMessages + 1} MSG`,
         balance: `0`,
         identifier: 'metamask-messaging-asset',
         image: 'https://i.imgur.com/1jYAmux.png',

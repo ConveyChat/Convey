@@ -1,7 +1,36 @@
 .is-metamask-orange {
-  background-color: #f6851b;
+  background-color: #1f294d;
+  color: #ffffff;
 }
 
-.hidden {
-  display: none;
+.title {
+  background: linear-gradient(321.73deg, #FFC750 0%, #FF6895 40.06%, #5666F6 80.89%, #5FC5A6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 20px;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.adjust-centre {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
+.panel-heading {
+  background: #5666F6;
+  color: #ffffff;
+}
+
+.sendbutton {
+  background: #FF6895;
+  color: #ffffff;
+  border: none;
+}
+
+.publishbutton {
+  background: #FF6895;
+  color: #ffffff;
+  border: none;
 }

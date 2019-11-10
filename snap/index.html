@@ -7,6 +7,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
     />
+    <link href="https://fonts.googleapis.com/css?family=Exo+2&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <script src="https://unpkg.com/@dfuse/client"></script>
     <script src="dfuse.js"></script>
@@ -17,11 +18,13 @@
   <body>
     <section class="hero is-metamask-orange">
       <div class="hero-body">
-        <div class="container">
-          <h1 class="title is-family-code has-text-weight-bold is-size-1">
-            MessageMask
+        <div class="container adjust-centre">
+          <figure class="image is-96x96">
+            <img src="https://i.imgur.com/qYdRP5S.png">
+          </figure>             
+          <h1 class="title">
+            CONNEXION
           </h1>
-          <h2 class="subtitle"></h2>
         </div>
       </div>
     </section>
@@ -36,33 +39,57 @@
       <br /><br /><br />
       <div class="columns">
         <div class="column">
-          <p class="title has-text-left">Send:</p>
-          <div class="box has-background-white-bis">
-            <div class="field">
-              <label class="label">Receiver Address or ENS: </label>
-              <div class="control">
-                <input class="input" type="text" placeholder="0x..." />
+          <div class="panel"></div>
+            <p class="panel-heading">
+              Message
+            </p>
+            <div class="box">
+              <div class="field">
+                <label class="label">Receiver Address or ENS: </label>
+                <div class="control">
+                  <input class="input" type="text" placeholder="0x..." />
+                </div>
               </div>
-            </div>
-            <div class="field">
-              <label class="label">Message: </label>
-              <div class="control">
-                <textarea class="textarea" placeholder=""></textarea>
+              <div class="field">
+                <label class="label">Message: </label>
+                <div class="control">
+                  <textarea class="textarea" placeholder=""></textarea>
+                </div>
               </div>
-            </div>
-            <div class="control has-text-centered">
-              <button class="button is-dark sendbutton is-fullwidth">
-                Send!
-              </button>
+              <div class="control has-text-centered">
+                <button class="button is-rounded sendbutton">
+                  Send
+                </button>
+              </div>
+           </div>
+        </div>
+        <div class="column">
+          <div class="panel"></div>
+            <p class="panel-heading">
+              Publish
+            </p>
+            <div class="box">
+              <div class="field">
+                <label class="label">Message: </label>
+                <div class="control">
+                  <textarea class="textarea publishtextarea" placeholder=""></textarea>
+                </div>
+              </div>
+              <div class="control has-text-centered">
+                <button class="button is-rounded publishbutton">
+                  Send
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <br /><br /><br />
       <article class="panel is-link">
           <p class="panel-heading">
             Whitelist
           </p>
-          <a class="panel-block is-active">
+          <a class="panel-block">
             0x7f12c4f39Fc2E3158d5a11b2387AEB4AB892d54C
           </a>
           <a class="panel-block">
@@ -92,12 +119,14 @@
 		const addressH2 = document.querySelector("h2.subtitle");
 		const messagesDiv = document.querySelector("div.messages");
 		const sendButton = document.querySelector("button.sendbutton");
+    const publishButton = document.querySelector('button.publishbutton');
 
 		connectButton.addEventListener("click", install);
 		loginButton.addEventListener("click", link);
 		sendButton.addEventListener("click", sendMSG);
+    publishButton.addEventListener("click", publishMSG);
 
-		const web3 = new Web3(window.ethereum);
+    const web3 = new Web3(window.ethereum);
 		// (async () => {
 		// 	await window.ethereum.enable();
 		// })();
@@ -343,6 +372,16 @@
 			);
 			MessageContract.sendMessage(result.receiver, `mm:${result.hash}:${result.receiver}`).send({from: window.web3.get});
 			console.log("Transaction sent");
-		}
-	</script>
+    }
+
+    async function publishMSG() {
+			const body = document.querySelector("textarea.publishtextarea").value;
+			const result = await sender.send(ethAddress, body);
+			console.log(
+				`call smart contract with mm:${result.hash}:${result.receiver}`
+			);
+			MessageContract.sendMessage(`mm:${result.hash}:${result.receiver}`).send({from: window.web3.get});
+			console.log("Transaction sent");
+    }
+  </script>
 </html>
