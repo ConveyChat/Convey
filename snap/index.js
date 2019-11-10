@@ -10,7 +10,7 @@ wallet.registerApiRequestHandler(async origin => {
         identifier: 'metamask-messaging-asset',
         image: 'https://i.imgur.com/1jYAmux.png',
         decimals: 0,
-        customViewUrl: 'http://localhost:8081/message?hash=1234546'
+        customViewUrl: `http://localhost:8081/message?hash=${msg.hash}`
       };
 
       trackMessages(origin, msg);
