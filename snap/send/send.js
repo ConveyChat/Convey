@@ -9,10 +9,9 @@ async function send(ethAddress, ensName, msg) {
 
   // if its the ens
   if (domain.includes('.eth')) {
-    provider.resolveName(domain).then(function(address) {
-      console.log('Address: ' + address);
-      addr = address;
-    });
+    const resolvedAddr = await provider.resolveName(domain);
+    console.log('Resolved Address: ', resolvedAddr);
+    addr = resolvedAddr;
   } else {
     addr = domain;
   }
