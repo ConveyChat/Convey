@@ -8,6 +8,9 @@
       href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/@dfuse/client"></script>
+    <script src="dfuse.js"></script>
+    <script src="./decoder/decodeBundle.js"></script>
   </head>
 
   <body>
@@ -37,13 +40,13 @@
             <div class="field">
               <label class="label">Receiver Address: </label>
               <div class="control">
-                <input class="input" type="text" placeholder="Text input" />
+                <input class="input" type="text" placeholder="0x..." />
               </div>
             </div>
             <div class="field">
               <label class="label">Message: </label>
               <div class="control">
-                <textarea class="textarea" placeholder="Textarea"></textarea>
+                <textarea class="textarea" placeholder=""></textarea>
               </div>
             </div>
             <div class="control has-text-centered">
@@ -113,14 +116,9 @@
       }
     }
 
-    async function receiveMessage() {
+    async function receiveMessage(msg) {
       try {
-        const response = await pluginApi.registerNewMessage({
-          sender: '0x8c09fef42f062c108554302c7d5b15bbc6189daf',
-          receiver: '0x694E97ad6Ed18c00BffB959D346b8356A2EcBde1',
-          body:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
-        });
+        const response = await pluginApi.registerNewMessage(msg);
         console.log(response);
       } catch (err) {
         console.error(err);
@@ -129,17 +127,12 @@
     }
     async function listen() {
       try {
-        await pluginApi
-          .on('ping', response => {
-            alert(
-              `Listener received response from Snap: ${JSON.stringify(
-                response
-              )}`
-            );
-          })
-          .then(() => {
-            alert('Listener seems to be registered.');
+        await pluginApi.on('newMessage', response => {
+          wallet.send({
+            method: 'alert',
+            params: [`You have a new message from ${response.msg.sender}`]
           });
+        });
       } catch (err) {
         console.error(err);
         alert('Problem happened: ' + err.message || err);

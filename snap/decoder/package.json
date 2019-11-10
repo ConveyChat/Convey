@@ -1,0 +1,14 @@
+{
+  "name": "decoder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "decode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethereumjs-abi": "^0.6.8"
+  }
+}

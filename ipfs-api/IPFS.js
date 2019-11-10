@@ -15,10 +15,10 @@ app.post('/addfile', async function(req, res) {
   res.send(await ipfs.addMessage(req.body));
 });
 //Getting the uploaded file via hash code.
-app.get('/getfile', async function(req, res) {
-  hashes = req.body.hashes;
+app.get('/getfile/:hash', async function(req, res) {
+  hash = req.params.hash;
 
-  res.send(await ipfs.getMessages(hashes));
+  res.send(await ipfs.getMessage(hash));
 });
 
 app.listen(3000, () => console.log('App listening on port 3000!'));
