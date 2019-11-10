@@ -34,3 +34,15 @@
   color: #ffffff;
   border: none;
 }
+
+.card-container {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.adjust-msg-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
