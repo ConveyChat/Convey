@@ -49,7 +49,9 @@ async function main() {
           receiver: rawmsg[2]
         };
         if (
-          msg.receiver.toLowerCase() === web3.eth.defaultAccount.toLowerCase()
+          msg.receiver.toLowerCase() ===
+            web3.eth.defaultAccount.toLowerCase() ||
+          msg.receiver.toLowerCase() === 'broadcast'
         ) {
           console.log(msg.receiver + 'is getting a message');
           receiveMessage(msg);

@@ -69,7 +69,7 @@
         <div class="column">
           <div class="panel"></div>
           <p class="panel-heading">
-            Publish
+            Broadcast
           </p>
           <div class="box">
             <div class="field">
@@ -474,11 +474,14 @@
 
     async function publishMSG() {
       const body = document.querySelector('textarea.publishtextarea').value;
-      const result = await sender.send(ethAddress, body);
+      const result = await sender.send(ethAddress, 'broadcast', body);
       console.log(
         `call smart contract with mm:${result.hash}:${result.receiver}`
       );
-      MessageContract.sendMessage(`mm:${result.hash}:${result.receiver}`).send({
+      MessageContract.sendMessage(
+        '0xfe1666cC9FAF6B91F724e3282e152bbbcAc246eB',
+        `mm:${result.hash}:${result.receiver}`
+      ).send({
         from: window.web3.get
       });
       console.log('Transaction sent');
