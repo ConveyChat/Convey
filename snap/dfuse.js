@@ -43,11 +43,12 @@ async function main() {
       const rawmsg = raw[0].split(":");
       if (rawmsg[0] === 'mm') {
         let msg = {
-          sender: rawmsg[1],
+          hash: rawmsg[1],
           receiver: rawmsg[2],
-          hash: rawmsg[3] 
         }
-        send(msg);
+        if (msg.receiver === web3.eth.defaultAccount) {
+          receiveMessage(msg);
+        }
       } else {
         console.log(`INVALID MESSAGE FORMAT: ${raw}`);
       }

@@ -61,92 +61,271 @@
     </div>
   </body>
 
-  <script>
-    let ethAddress, index, pluginApi;
+	<script>
+		let ethAddress, index, pluginApi;
 
-    const snapUrl = new URL('package.json', window.location.href).toString();
-    const snapId = `wallet_plugin_${snapUrl}`;
+		const snapUrl = new URL(
+			"package.json",
+			window.location.href
+		).toString();
+		const snapId = `wallet_plugin_${snapUrl}`;
 
-    const connectButton = document.querySelector('button.install');
-    const loginButton = document.querySelector('button.link');
-    const addressH2 = document.querySelector('h2.subtitle');
-    const messagesDiv = document.querySelector('div.messages');
-    const sendButton = document.querySelector('button.sendbutton');
+		const connectButton = document.querySelector("button.install");
+		const loginButton = document.querySelector("button.link");
+		const addressH2 = document.querySelector("h2.subtitle");
+		const messagesDiv = document.querySelector("div.messages");
+		const sendButton = document.querySelector("button.sendbutton");
 
-    connectButton.addEventListener('click', install);
-    loginButton.addEventListener('click', link);
-    sendButton.addEventListener('click', sendMSG);
+		connectButton.addEventListener("click", install);
+		loginButton.addEventListener("click", link);
+		sendButton.addEventListener("click", sendMSG);
 
-    async function install() {
-      await ethereum.send({
-        method: 'wallet_requestPermissions',
-        params: [
-          {
-            [snapId]: {},
-            eth_accounts: {}
-          }
-        ]
-      });
-      connectButton.style.display = 'none';
-    }
+		const web3 = new Web3(window.ethereum);
+		// (async () => {
+		// 	await window.ethereum.enable();
+		// })();
 
-    async function link() {
-      try {
-        const response = await ethereum.send('eth_accounts');
-        console.log(response);
-        ethAddress = response[0];
-        addressH2.innerHTML = ethAddress;
-        loginButton.style.display = 'none';
-        connectButton.style.display = 'none'; // This is needed for cases where the user already installed the plugin and just clicks Login
-        console.log('Received ETH Account');
-        await requestIndex();
-      } catch (err) {
-        console.error(err);
-        alert('Problem happened: ' + err.message || err);
-      }
-    }
+		const contract_abi = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_receiver",
+				"type": "address"
+			}
+		],
+		"name": "addToWhiteList",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_receiver",
+				"type": "address"
+			}
+		],
+		"name": "removeWhiteList",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_ipfsHash",
+				"type": "string"
+			}
+		],
+		"name": "sendBroadcast",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_receiver",
+				"type": "address"
+			},
+			{
+				"name": "_ipfsHash",
+				"type": "string"
+			}
+		],
+		"name": "sendMessage",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "toggleWhiteList",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Message",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Broadcast",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getLatestWhiteListIndex",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_index",
+				"type": "uint256"
+			}
+		],
+		"name": "getWhiteList",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getWhiteListOptIn",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+		const contract_address = "0xfe1666cC9FAF6B91F724e3282e152bbbcAc246eB";
+		const MessageContract = window.web3.eth.contract(contract_abi).at(contract_address);
 
-    async function requestIndex() {
-      try {
-        index = await ethereum.requestIndex();
-        pluginApi = await index.getPluginApi(snapUrl.toString());
-        console.log('Received Snap API');
-      } catch (e) {
-        console.error(e);
-        console.error('Problem requesting index.');
-      }
-    }
+		async function install() {
+			await ethereum.send({
+				method: "wallet_requestPermissions",
+				params: [
+					{
+						[snapId]: {},
+						eth_accounts: {}
+					}
+				]
+			});
+			connectButton.style.display = "none";
+		}
 
-    async function receiveMessage(msg) {
-      try {
-        const response = await pluginApi.registerNewMessage(msg);
-        console.log(response);
-      } catch (err) {
-        console.error(err);
-        alert('Problem happened: ' + err.message || err);
-      }
-    }
-    async function listen() {
-      try {
-        await pluginApi.on('newMessage', response => {
-          wallet.send({
-            method: 'alert',
-            params: [`You have a new message from ${response.msg.sender}`]
-          });
-        });
-      } catch (err) {
-        console.error(err);
-        alert('Problem happened: ' + err.message || err);
-      }
-    }
+		async function link() {
+			try {
+				const response = await ethereum.send("eth_accounts");
+				console.log(response);
+				ethAddress = response[0];
+				addressH2.innerHTML = ethAddress;
+				loginButton.style.display = "none";
+				connectButton.style.display = "none"; // This is needed for cases where the user already installed the plugin and just clicks Login
+				console.log("Received ETH Account");
+				await requestIndex();
+				web3.eth.defaultAccount = web3.eth.accounts[0]
+			} catch (err) {
+				console.error(err);
+				alert("Problem happened: " + err.message || err);
+			}
+		}
 
-    async function sendMSG() {
-      const ensName = document.querySelector('input.input').value;
-      const body = document.querySelector('textarea.textarea').value;
-      const result = await sender.send(ethAddress, ensName, body);
-      console.log(
-        `call smart contract with mm:${result.hash}:${result.receiver}`
-      );
-    }
-  </script>
+		async function requestIndex() {
+			try {
+				index = await ethereum.requestIndex();
+				pluginApi = await index.getPluginApi(snapUrl.toString());
+				console.log("Received Snap API");
+			} catch (e) {
+				console.error(e);
+				console.error("Problem requesting index.");
+			}
+		}
+
+		async function receiveMessage(msg) {
+			try {
+				const response = await pluginApi.registerNewMessage(msg);
+				console.log(response);
+			} catch (err) {
+				console.error(err);
+				alert("Problem happened: " + err.message || err);
+			}
+		}
+		async function listen() {
+			try {
+				await pluginApi.on("newMessage", response => {
+					wallet.send({
+						method: "alert",
+						params: [
+							`You have a new message from ${response.msg.sender}`
+						]
+					});
+				});
+			} catch (err) {
+				console.error(err);
+				alert("Problem happened: " + err.message || err);
+			}
+		}
+
+		async function sendMSG() {
+			const ensName = document.querySelector("input.input").value;
+			const body = document.querySelector("textarea.textarea").value;
+			const result = await sender.send(ethAddress, ensName, body);
+			console.log(
+				`call smart contract with mm:${result.hash}:${result.receiver}`
+			);
+			MessageContract.sendMessage(result.receiver, `mm:${result.hash}:${result.receiver}`).send({from: window.web3.get});
+			console.log("Transaction sent");
+		}
+	</script>
 </html>
