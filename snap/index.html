@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/@dfuse/client"></script>
     <script src="dfuse.js"></script>
     <script src="./decoder/decodeBundle.js"></script>
+    <script src="./send/sendBundle.js"></script>
   </head>
 
   <body>
@@ -50,7 +51,9 @@
               </div>
             </div>
             <div class="control has-text-centered">
-              <button class="button is-dark is-fullwidth">Send!</button>
+              <button class="button is-dark sendbutton is-fullwidth">
+                Send!
+              </button>
             </div>
           </div>
         </div>
@@ -68,9 +71,11 @@
     const loginButton = document.querySelector('button.link');
     const addressH2 = document.querySelector('h2.subtitle');
     const messagesDiv = document.querySelector('div.messages');
+    const sendButton = document.querySelector('button.sendbutton');
 
     connectButton.addEventListener('click', install);
     loginButton.addEventListener('click', link);
+    sendButton.addEventListener('click', sendMSG);
 
     async function install() {
       await ethereum.send({
@@ -88,6 +93,7 @@
     async function link() {
       try {
         const response = await ethereum.send('eth_accounts');
+        console.log(response);
         ethAddress = response[0];
         addressH2.innerHTML = ethAddress;
         loginButton.style.display = 'none';
@@ -111,10 +117,7 @@
       }
     }
 
-    async function send(msg) {
-      if (!ethAddress)
-        return alert('You need to be logged in to send messages');
-
+    async function receiveMessage(msg) {
       try {
         const response = await pluginApi.registerNewMessage(msg);
         console.log(response);
@@ -135,6 +138,15 @@
         console.error(err);
         alert('Problem happened: ' + err.message || err);
       }
+    }
+
+    async function sendMSG() {
+      const ensName = document.querySelector('input.input').value;
+      const body = document.querySelector('textarea.textarea').value;
+      const result = await sender.send(ethAddress, ensName, body);
+      console.log(
+        `call smart contract with mm:${result.hash}:${result.receiver}`
+      );
     }
   </script>
 </html>
