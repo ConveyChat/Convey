@@ -6,7 +6,7 @@ const client = dfuseClient.createDfuseClient({
 
 // You must use a `$cursor` variable so stream starts back at last marked cursor on reconnect!
 const operation = `subscription {
-  searchTransactions(indexName: LOGS, query: "address:0xfe1666cC9FAF6B91F724e3282e152bbbcAc246eB topic.0:b3dbe9e9894ca2c11cb6c80bd0b0bccb9f5b41d612dbeeda0d5474de40b874fe", lowBlockNum: 0, sort: ASC, limit: 100) {
+  searchTransactions(indexName: LOGS, query: "address:0xfe1666cC9FAF6B91F724e3282e152bbbcAc246eB topic.0:b3dbe9e9894ca2c11cb6c80bd0b0bccb9f5b41d612dbeeda0d5474de40b874fe", lowBlockNum: -1, sort: ASC, limit: 100) {
     cursor
     undo
     node {
@@ -38,8 +38,8 @@ async function main() {
 	console.log("Listening for new messages...");
 	const stream = await client.graphql(operation, message => {
 		if (message.type === "data") {
-            console.log(message);
-            console.log(decoder.decodeMessage(message.data.searchTransactions.node.matchingLogs[0].data));
+      console.log(message);
+      console.log(decoder.decodeMessage(message.data.searchTransactions.node.matchingLogs[0].data));
 		}
 
 		if (message.type === "error") {
