@@ -39,7 +39,18 @@ async function main() {
 	const stream = await client.graphql(operation, message => {
 		if (message.type === "data") {
       console.log(message);
-      console.log(decoder.decodeMessage(message.data.searchTransactions.node.matchingLogs[0].data));
+      const raw = decoder.decodeMessage(message.data.searchTransactions.node.matchingLogs[0].data);
+      const rawmsg = raw[0].split(":");
+      if (rawmsg[0] === 'mm') {
+        let msg = {
+          sender: rawmsg[1],
+          receiver: rawmsg[2],
+          hash: rawmsg[3] 
+        }
+        send(msg);
+      } else {
+        console.log(`INVALID MESSAGE FORMAT: ${raw}`);
+      }
 		}
 
 		if (message.type === "error") {
