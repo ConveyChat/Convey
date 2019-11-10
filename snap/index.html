@@ -436,7 +436,8 @@
 
     async function receiveMessage(msg) {
       try {
-        const response = await pluginApi.registerNewMessage(msg);
+		const response = await pluginApi.registerNewMessage(msg);
+		console.log(msg)
         console.log(response);
       } catch (err) {
         console.error(err);
@@ -446,10 +447,11 @@
     async function listen() {
       try {
         await pluginApi.on('newMessage', response => {
-          wallet.send({
-            method: 'alert',
-            params: [`You have a new message from ${response.msg.sender}`]
-          });
+        //   wallet.send({
+        //     method: 'alert',
+        //     params: [`You have a new message from ${response.msg.sender}`]
+		//   });
+		console.log("received a new message")
         });
       } catch (err) {
         console.error(err);

@@ -47,7 +47,10 @@ async function main() {
           receiver: rawmsg[2],
         }
         if (msg.receiver === web3.eth.defaultAccount) {
+          console.log(msg.receiver + "is getting a message")
           receiveMessage(msg);
+        } else {
+          console.log(`${web3.eth.defaultAccount} is not the intended recepient, ${msg.reciever} is`)
         }
       } else {
         console.log(`INVALID MESSAGE FORMAT: ${raw}`);
