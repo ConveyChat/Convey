@@ -1,1 +1,2 @@
-# metamask-messaging
+# Connexion
+A layer 1 communication system through MetaMask snaps. Ethereum Name Service is leveraged to allow users to send messages to others using simple domain names instead of having to remember an etherum public key. IPFS is also leveraged to hash the sender and recipient addresses, as well as the message. A smart contract is leveraged to push the hashed message to the ethereum blockchain. Defuse is used on the recipient side to listen to for new messages. The message is then unhashed and presented to the recipient. 
